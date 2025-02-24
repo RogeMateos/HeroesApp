@@ -1,7 +1,7 @@
 import React from 'react'
 
-export const DcPage = () => {
+export const DCPage = () => {
   return (
-    <h1>DcPage</h1>
+    <h1>DCPage</h1>
   )
 }
