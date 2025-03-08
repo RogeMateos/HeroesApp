@@ -43,6 +43,7 @@ const CharactersByHero = ({ alter_ego, characters }) => {
               <Link to={`/hero/${id}`}>
                 Más información
               </Link>
+              
             </div>
           </div>
         </div>
