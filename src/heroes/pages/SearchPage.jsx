@@ -1,32 +1,23 @@
-import { useState, useEffect } from 'react';
+
 import { useLocation, useNavigate } from 'react-router-dom';
-import { HeroCard } from '../components';
-import { getHeroesByName } from '../helpers';
- 
-export const SearchPage = () => {  
+import queryString from 'query-string';
+import { useForm } from '../../hooks/useForm';
+
+export const SearchPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   
-  // Get the search query from URL query parameters
-  const queryParams = new URLSearchParams(location.search);
-  const q = queryParams.get('q') || '';
+  const { q = '' } = queryString.parse(location.search);
   
-  // State for heroes and search text
-  const [searchText, setSearchText] = useState(q);
-  const [heroes, setHeroes] = useState([]);
+  const { searchText, onInputChange } = useForm({
+    searchText: q
+  });
   
-  // Effect to perform search when query parameter changes
-  useEffect(() => {
-    // Search heroes based on the query parameter
-    const heroesFound = getHeroesByName(q);
-    setHeroes(heroesFound);
-  }, [q]);
-  
-  // Handle form submission
-  const onSearchSubmit = (e) => {
-    e.preventDefault();
+  const onSearchSubmit = (event) => {
+    event.preventDefault();
     
-    // Update URL with the query parameter
+    if (searchText.trim().length <= 1) return;
+    
     navigate(`?q=${searchText.toLowerCase().trim()}`);
   };
 
@@ -43,12 +34,12 @@ export const SearchPage = () => {
           <form onSubmit={onSearchSubmit}>
             <input 
               type="text"
-              placeholder="Search hero"
+              placeholder="Search a hero"
               className="form-control"
               name="searchText"
               autoComplete="off"
               value={searchText}
-              onChange={(e) => setSearchText(e.target.value)}
+              onChange={onInputChange}
             />
             
             <button 
@@ -64,26 +55,21 @@ export const SearchPage = () => {
           <h4>Results</h4>
           <hr />
           
-          {/* Initial state - no search performed yet */}
-          {q === '' && (
-            <div className="alert alert-primary">
-              Search a hero
-            </div>
-          )}
-          
-          {/* No results found */}
-          {q !== '' && heroes.length === 0 && (
-            <div className="alert alert-danger">
-              No results with <b>{q}</b>
-            </div>
-          )}
-          
-          {/* Display heroes if found */}
-          {heroes.map(hero => (
-            <HeroCard key={hero.id} {...hero} />
-          ))}
+          <div className="alert alert-primary">
+            Search a hero
+          </div>
+          <div className="alert alert-danger">
+            no hero with <b>{q}</b> was found
+          </div>
+          {/* 
+            Here we'll add the hero display logic in the next step
+            This will show either:
+            - A message to search a hero (if q is empty)
+            - A message saying no hero was found with that query
+            - A list of heroes matching the search query
+          */}
         </div>
       </div>
     </>
-  );   
+  );
 };
