@@ -2,6 +2,8 @@
 import { useLocation, useNavigate } from 'react-router-dom';
 import queryString from 'query-string';
 import { useForm } from '../../hooks/useForm';
+import { getHeroesByName } from '../helpers';
+import { HeroCard } from '../components';
 
 export const SearchPage = () => {
   const navigate = useNavigate();
@@ -13,12 +15,15 @@ export const SearchPage = () => {
     searchText: q
   });
   
+
+  const heroes = getHeroesByName(q);
+
   const onSearchSubmit = (event) => {
     event.preventDefault();
     
-    if (searchText.trim().length <= 1) return;
+    //if (searchText.trim().length <= 1) return;
     
-    navigate(`?q=${searchText.toLowerCase().trim()}`);
+    navigate(`?q=${searchText}`);
   };
 
   return (
@@ -55,19 +60,18 @@ export const SearchPage = () => {
           <h4>Results</h4>
           <hr />
           
-          <div className="alert alert-primary">
-            Search a hero
-          </div>
-          <div className="alert alert-danger">
-            no hero with <b>{q}</b> was found
-          </div>
-          {/* 
-            Here we'll add the hero display logic in the next step
-            This will show either:
-            - A message to search a hero (if q is empty)
-            - A message saying no hero was found with that query
-            - A list of heroes matching the search query
-          */}
+          {
+            (q === '') 
+              ? <div className="alert alert-primary">Search a hero</div>
+              : (heroes.length === 0) 
+                && <div className="alert alert-danger">No hero with <b>{q}</b></div>
+          }
+          
+          {
+            heroes.map(hero => (
+              <HeroCard key={hero.id} {...hero} />
+            ))
+          }
         </div>
       </div>
     </>
