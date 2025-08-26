@@ -8,6 +8,12 @@ export default defineConfig({
 		extensions: ['.js', '.jsx']
 	},
 	build: {
-		outDir: 'dist'
+		outDir: 'dist',
+		assetsDir: 'assets',
+		rollupOptions: {
+			output: {
+				assetFileNames: 'assets/[name][extname]'
+			}
+		}
 	}
 });
